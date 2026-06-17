@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>R Lab — Learn Data Visualization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0D1117; --bg2: #161B22; --bg3: #21262D;
+      --accent: #58A6FF; --accent2: #3DDC84;
+      --text: #E6EDF3; --text2: #8B949E; --text3: #484F58;
+      --border: rgba(255,255,255,0.08);
+      --r: #FF7B72; --r2: #FFA657;
+      --font: 'Space Grotesk', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--mono); font-size: 1.1rem; color: var(--accent2); }
+    .nav-logo span { color: var(--r); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--accent); color: #0D1117; padding: 0.5rem 1.25rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.85; }
+
+    .hero { min-height: 100vh; display: flex; align-items: center; padding: 7rem 2rem 4rem; position: relative; overflow: hidden; }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(88,166,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(88,166,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    }
+    .hero-glow { position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 500px; background: radial-gradient(ellipse, rgba(88,166,255,0.12) 0%, transparent 70%); pointer-events: none; }
+    .hero-inner { max-width: 760px; margin: 0 auto; position: relative; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(61,220,132,0.1); border: 1px solid rgba(61,220,132,0.25); color: var(--accent2); font-family: var(--mono); font-size: 0.78rem; padding: 0.3rem 0.85rem; border-radius: 100px; margin-bottom: 1.75rem; }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+    .hero h1 .hl-blue { color: var(--accent); }
+    .hero h1 .hl-green { color: var(--accent2); }
+    .hero-code { display: inline-block; font-family: var(--mono); font-size: clamp(1rem, 2.5vw, 1.35rem); background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1.2rem; color: var(--r2); margin-bottom: 1.5rem; }
+    .hero p { font-size: 1.1rem; color: var(--text2); max-width: 520px; margin: 0 auto 2.5rem; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--accent); color: #0D1117; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(88,166,255,0.3); }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; text-decoration: none; transition: border-color 0.2s, background 0.2s; }
+    .btn-outline:hover { border-color: var(--text3); background: var(--bg2); }
+    .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .stat-num { font-size: 1.8rem; font-weight: 700; color: var(--text); }
+    .stat-label { font-size: 0.8rem; color: var(--text2); margin-top: 0.2rem; }
+
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1000px; margin: 0 auto; }
+    .eyebrow { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 1rem; }
+    .section-sub { color: var(--text2); font-size: 1.05rem; max-width: 540px; }
+
+    .about { background: var(--bg2); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+    .about-text p { color: var(--text2); margin-bottom: 1rem; line-height: 1.75; }
+    .about-code-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .code-header { background: var(--bg2); padding: 0.6rem 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; } .dot-y { background: #FEBC2E; } .dot-g { background: #28C840; }
+    .code-filename { font-family: var(--mono); font-size: 0.78rem; color: var(--text2); margin-left: 0.5rem; }
+    .code-body { padding: 1.25rem 1.5rem; font-family: var(--mono); font-size: 0.85rem; line-height: 1.8; }
+    .c-fn { color: #D2A8FF; } .c-str { color: #A5D6FF; } .c-num { color: var(--r2); }
+    .c-com { color: var(--text3); } .c-kw { color: var(--r); } .c-var { color: var(--accent2); }
+
+    .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+    .module-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden; }
+    .module-card:hover { border-color: rgba(88,166,255,0.35); transform: translateY(-3px); }
+    .module-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.2s; }
+    .module-card:hover::before { opacity: 1; }
+    .module-num { font-family: var(--mono); font-size: 0.75rem; color: var(--text3); margin-bottom: 0.75rem; }
+    .module-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+    .module-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.65; }
+    .module-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1rem; }
+    .tag { font-family: var(--mono); font-size: 0.7rem; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 0.2rem 0.5rem; border-radius: 4px; }
+
+    .contact { background: var(--bg2); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1.3fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+    .contact-info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .contact-info p { color: var(--text2); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .contact-detail { display: flex; align-items: center; gap: 0.75rem; color: var(--text2); font-size: 0.875rem; margin-bottom: 0.75rem; }
+    .contact-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+
+    form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.85rem; color: var(--text2); font-weight: 500; }
+    input, textarea, select { background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 0.9rem; padding: 0.7rem 1rem; border-radius: 8px; outline: none; transition: border-color 0.2s; width: 100%; }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    input::placeholder, textarea::placeholder { color: var(--text3); }
+    textarea { resize: vertical; min-height: 120px; }
+    select option { background: var(--bg3); }
+    .form-submit { background: var(--accent); color: #0D1117; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; font-family: var(--font); transition: opacity 0.2s, transform 0.15s; align-self: flex-start; }
+    .form-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* QUIZ */
+    .quiz { background: var(--bg); }
+    .quiz-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-top: 3rem; max-width: 720px; }
+    .quiz-progress-bar { height: 4px; background: var(--bg3); border-radius: 2px; margin-bottom: 2rem; overflow: hidden; }
+    .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.4s ease; }
+    .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .quiz-qnum { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); }
+    .quiz-score-live { font-family: var(--mono); font-size: 0.78rem; color: var(--text3); }
+    .quiz-question { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 1.5rem; color: var(--text); }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.65rem; }
+    .quiz-opt { background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.92rem; font-family: var(--font); text-align: left; transition: border-color 0.15s, background 0.15s; display: flex; align-items: center; gap: 0.75rem; }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(88,166,255,0.06); }
+    .quiz-opt.correct { border-color: var(--accent2) !important; background: rgba(61,220,132,0.1) !important; color: var(--accent2); }
+    .quiz-opt.wrong   { border-color: var(--r) !important; background: rgba(255,123,114,0.1) !important; color: var(--r); }
+    .quiz-opt.reveal  { border-color: var(--accent2); background: rgba(61,220,132,0.06); color: var(--text2); }
+    .quiz-opt:disabled { cursor: default; }
+    .opt-letter { font-family: var(--mono); font-size: 0.72rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.4rem; flex-shrink: 0; color: var(--text3); }
+    .quiz-opt.correct .opt-letter { background: var(--accent2); color: #0D1117; border-color: var(--accent2); }
+    .quiz-opt.wrong   .opt-letter { background: var(--r); color: #0D1117; border-color: var(--r); }
+    .quiz-feedback { margin-top: 1rem; font-size: 0.875rem; min-height: 1.4rem; color: var(--text2); line-height: 1.5; }
+    .quiz-feedback.ok  { color: var(--accent2); }
+    .quiz-feedback.err { color: var(--r); }
+    .quiz-nav { display: flex; justify-content: flex-end; margin-top: 1.5rem; }
+    .quiz-next { background: var(--accent); color: #0D1117; border: none; padding: 0.7rem 1.75rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: var(--font); transition: opacity 0.2s; display: none; }
+    .quiz-next:hover { opacity: 0.85; }
+    .quiz-result { text-align: center; padding: 1rem 0; display: none; }
+    .result-score { font-size: 3.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; }
+    .result-label { font-size: 1rem; color: var(--text2); margin-bottom: 1.5rem; }
+    .result-bar { height: 6px; background: var(--bg3); border-radius: 3px; margin: 1.25rem 0; overflow: hidden; }
+    .result-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.8s ease; }
+    .result-msg { font-size: 0.95rem; color: var(--text2); margin-bottom: 1.75rem; line-height: 1.6; }
+    .quiz-restart { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1.75rem; border-radius: 8px; font-size: 0.95rem; cursor: pointer; font-family: var(--font); transition: border-color 0.2s, background 0.2s; }
+    .quiz-restart:hover { border-color: var(--accent); background: rgba(88,166,255,0.06); }
+
+    footer { padding: 2.5rem 2rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--mono); font-size: 0.95rem; color: var(--accent2); }
+    .footer-logo span { color: var(--r); }
+    footer p { color: var(--text3); font-size: 0.8rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: var(--text3); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text2); }
+
+    @media (max-width: 700px) {
+      .nav-links { display: none; }
+      .about-grid, .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; }
+      footer { flex-direction: column; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><span>R</span>Lab</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Enroll now</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">Now enrolling — Batch 2025</div>
+    <h1>Master <span class="hl-blue">Data Visualization</span><br/>with <span class="hl-green">R Graphics</span></h1>
+    <p>A hands-on course covering base R graphics, the plot() function, graph customization, and exporting publication-ready charts.</p>
+    <div class="hero-btns">
+      <a href="#modules" class="btn-primary">Explore the syllabus</a>
+      <a href="#about" class="btn-outline">Learn more</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">6</div><div class="stat-label">Core modules</div></div>
+      <div><div class="stat-num">20+</div><div class="stat-label">Hands-on exercises</div></div>
+      <div><div class="stat-num">100%</div><div class="stat-label">Project-based</div></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="about" id="about">
+  <div class="section-inner">
+    <div class="eyebrow">// about the course</div>
+    <h2 class="section-title">Why learn R graphics?</h2>
+    <p class="section-sub">R is the language of data science. Its base graphics engine is powerful, flexible, and built into every R installation — no extra packages needed.</p>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>This course takes you from zero to confident: you'll understand how R's graphics engine works, how to build any common chart type, and how to make it look exactly the way you want.</p>
+        <p>You'll work with real datasets, write real R code, and finish each module with a graph you're proud to share. Whether you're a student, researcher, or analyst — these skills translate directly to your work.</p>
+        <p>By the end, you can produce print-ready visualizations and export them to PNG, PDF, SVG, or JPEG directly from R.</p>
+      </div>
+      <div class="about-code-block">
+        <div class="code-header">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="code-filename">scatter_plot.R</span>
+        </div>
+        <div class="code-body">
+          <span class="c-com"># Load and prepare data</span><br/>
+          <span class="c-var">data</span> &lt;- <span class="c-fn">read.csv</span>(<span class="c-str">"scores.csv"</span>)<br/><br/>
+          <span class="c-com"># Open PNG device</span><br/>
+          <span class="c-fn">png</span>(<span class="c-str">"output.png"</span>, width = <span class="c-num">800</span>)<br/><br/>
+          <span class="c-com"># Create customized plot</span><br/>
+          <span class="c-fn">plot</span>(<span class="c-var">data</span>$x, <span class="c-var">data</span>$y,<br/>
+          &nbsp;&nbsp;main = <span class="c-str">"Score Distribution"</span>,<br/>
+          &nbsp;&nbsp;xlab = <span class="c-str">"Students"</span>,<br/>
+          &nbsp;&nbsp;ylab = <span class="c-str">"Score"</span>,<br/>
+          &nbsp;&nbsp;col  = <span class="c-str">"#58A6FF"</span>,<br/>
+          &nbsp;&nbsp;pch  = <span class="c-num">19</span>, cex = <span class="c-num">1.2</span>)<br/><br/>
+          <span class="c-fn">dev.off</span>()
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="modules">
+  <div class="section-inner">
+    <div class="eyebrow">// syllabus</div>
+    <h2 class="section-title">What you'll learn</h2>
+    <p class="section-sub">Six focused modules, each building on the last — from your first graph to polished, exportable visualizations.</p>
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-num">01</div>
+        <div class="module-title">Introduction to R Graphics</div>
+        <div class="module-desc">Understand the graphics pipeline in R, how devices work, and where base graphics fits alongside ggplot2 and lattice.</div>
+        <div class="module-tags"><span class="tag">graphics()</span><span class="tag">devices</span><span class="tag">overview</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">02</div>
+        <div class="module-title">Creating Graphs</div>
+        <div class="module-desc">Build scatter plots, bar charts, histograms, line graphs, and box plots using R's built-in functions from scratch.</div>
+        <div class="module-tags"><span class="tag">barplot()</span><span class="tag">hist()</span><span class="tag">boxplot()</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">03</div>
+        <div class="module-title">Base Graphics — The Workhorse</div>
+        <div class="module-desc">Deep-dive into R's base graphics system: the graphics state, par() settings, coordinate systems, and multi-panel layouts.</div>
+        <div class="module-tags"><span class="tag">par()</span><span class="tag">mfrow</span><span class="tag">layout()</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">04</div>
+        <div class="module-title">The plot() Function</div>
+        <div class="module-desc">Master the most versatile function in R graphics. Learn every argument, method dispatch, and how plot() adapts to different data types.</div>
+        <div class="module-tags"><span class="tag">plot()</span><span class="tag">type=</span><span class="tag">xlim / ylim</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">05</div>
+        <div class="module-title">Customizing Graphs</div>
+        <div class="module-desc">Take full control: colors, point shapes, line types, fonts, legends, annotations, and adding layers with lines(), points(), and text().</div>
+        <div class="module-tags"><span class="tag">col</span><span class="tag">pch / lty</span><span class="tag">legend()</span></div>
+      </div>
+      <div class="module-card">
+        <div class="module-num">06</div>
+        <div class="module-title">Saving Graphs to Files</div>
+        <div class="module-desc">Export publication-ready graphics using R's device functions. Control resolution, dimensions, and file format for any workflow.</div>
+        <div class="module-tags"><span class="tag">png()</span><span class="tag">pdf()</span><span class="tag">svg()</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-inner">
+    <div class="eyebrow">// get in touch</div>
+    <h2 class="section-title">Enroll or ask a question</h2>
+    <p class="section-sub">Ready to start? Fill in the form and we'll get back to you within 24 hours.</p>
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <h3>Contact details</h3>
+        <p>Whether you're a student, faculty, or institution looking to run this course — reach out and we'll help you get started.</p>
+        <div class="contact-detail"><div class="contact-icon">📧</div><span>hello@rlab-course.edu</span></div>
+        <div class="contact-detail"><div class="contact-icon">🕐</div><span>Mon–Fri, 9 AM – 6 PM IST</span></div>
+        <div class="contact-detail"><div class="contact-icon">📍</div><span>Hyderabad, Telangana</span></div>
+      </div>
+      <form onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label for="fname">First name</label><input type="text" id="fname" placeholder="Priya" required/></div>
+          <div class="form-group"><label for="lname">Last name</label><input type="text" id="lname" placeholder="Sharma" required/></div>
+        </div>
+        <div class="form-group"><label for="email">Email address</label><input type="email" id="email" placeholder="priya@example.com" required/></div>
+        <div class="form-group">
+          <label for="interest">I'm interested in</label>
+          <select id="interest">
+            <option value="">Select an option…</option>
+            <option>Enrolling as a student</option>
+            <option>Running this course at my institution</option>
+            <option>Corporate training</option>
+            <option>Just learning more</option>
+          </select>
+        </div>
+        <div class="form-group"><label for="message">Message (optional)</label><textarea id="message" placeholder="Any questions or context…"></textarea></div>
+        <button type="submit" class="form-submit" id="submit-btn">Send message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="quiz" id="quiz">
+  <div class="section-inner">
+    <div class="eyebrow">// test yourself</div>
+    <h2 class="section-title">R Graphics Quiz</h2>
+    <p class="section-sub">10 questions covering everything from plot() basics to saving graphs. See how much you know!</p>
+    <div class="quiz-box">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qprogress" style="width:10%"></div></div>
+      <div id="quiz-panel">
+        <div class="quiz-meta">
+          <span class="quiz-qnum" id="qnum">Question 1 of 10</span>
+          <span class="quiz-score-live" id="qlive">Score: 0</span>
+        </div>
+        <div class="quiz-question" id="qtext"></div>
+        <div class="quiz-options" id="qopts"></div>
+        <div class="quiz-feedback" id="qfeedback"></div>
+        <div class="quiz-nav"><button class="quiz-next" id="qnext" onclick="nextQ()">Next →</button></div>
+      </div>
+      <div class="quiz-result" id="quiz-result">
+        <div class="result-score" id="res-score"></div>
+        <div class="result-label">out of 10</div>
+        <div class="result-bar"><div class="result-bar-fill" id="res-bar" style="width:0%"></div></div>
+        <div class="result-msg" id="res-msg"></div>
+        <button class="quiz-restart" onclick="startQuiz()">↺ Retake quiz</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><span>R</span>Lab</div>
+  <p>© 2025 R Lab. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#home">Home</a>
+    <a href="#modules">Syllabus</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = '✓ Message sent!';
+      btn.style.background = '#3DDC84';
+      e.target.reset();
+      setTimeout(() => {
+        btn.textContent = 'Send message →';
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 3000);
+    }, 1200);
+  }
+
+  const questions = [
+    {
+      q: "Which R function is considered the most fundamental and versatile for creating graphs?",
+      opts: ["barplot()", "plot()", "ggplot()", "hist()"],
+      ans: 1,
+      exp: "plot() is the core workhorse of R base graphics — it adapts to many data types and supports dozens of customization arguments."
+    },
+    {
+      q: "What does the 'pch' parameter control in a plot() call?",
+      opts: ["Line thickness", "Plot color hue", "Point/symbol shape", "Panel columns header"],
+      ans: 2,
+      exp: "pch stands for 'plotting character' and controls the symbol shape used for data points (e.g., pch=19 gives a solid circle)."
+    },
+    {
+      q: "Which function would you use to save a graph as a PNG file in R?",
+      opts: ["save()", "export()", "png()", "write.graph()"],
+      ans: 2,
+      exp: "png() opens a PNG graphics device. You draw your plot, then call dev.off() to close and write the file."
+    },
+    {
+      q: "What does par(mfrow = c(2, 3)) do?",
+      opts: ["Sets margins to 2 rows and 3 columns of pixels", "Creates a 2×3 grid layout for multiple plots", "Sets the plot title font size", "Defines 2 x-axis and 3 y-axis tick marks"],
+      ans: 1,
+      exp: "par(mfrow = c(rows, cols)) arranges the plot window into a grid so multiple charts can appear side by side."
+    },
+    {
+      q: "Which argument in plot() adds a main title to the graph?",
+      opts: ["title=", "header=", "main=", "label="],
+      ans: 2,
+      exp: "main= sets the main title displayed above the plot. For axis titles, use xlab= and ylab=."
+    },
+    {
+      q: "After opening a file device like pdf() or png(), what function must you call to finalize and save the file?",
+      opts: ["close()", "dev.off()", "save.plot()", "finish()"],
+      ans: 1,
+      exp: "dev.off() closes the active graphics device and writes all buffered output to the file."
+    },
+    {
+      q: "What does the 'lty' parameter control in R graphics?",
+      opts: ["Label type (axis text)", "Line type (solid, dashed, dotted…)", "Legend title position", "Left-side tick marks"],
+      ans: 1,
+      exp: "lty controls the line type: 1=solid, 2=dashed, 3=dotted, 4=dotdash, etc. Very useful for distinguishing multiple series."
+    },
+    {
+      q: "Which function creates a histogram in R base graphics?",
+      opts: ["plot(type='h')", "barplot()", "hist()", "density()"],
+      ans: 2,
+      exp: "hist() creates a histogram from a numeric vector. It automatically bins the data and draws frequency bars."
+    },
+    {
+      q: "What is the purpose of the legend() function in R?",
+      opts: ["To add a title banner to the plot", "To annotate individual data points", "To add a key explaining colors, symbols, or line types", "To set the plot background color"],
+      ans: 2,
+      exp: "legend() places a color/symbol key on the plot, helping readers identify which visual element corresponds to which data series."
+    },
+    {
+      q: "Which of the following exports a graph as a vector PDF suitable for print?",
+      opts: ["jpeg('file.pdf')", "pdf('output.pdf')", "png('output.pdf')", "svg('output.pdf')"],
+      ans: 1,
+      exp: "pdf() opens a PDF device producing scalable vector output — ideal for publications where quality at any zoom level matters."
+    }
+  ];
+
+  let current = 0, score = 0, answered = false;
+  const letters = ['A','B','C','D'];
+
+  function startQuiz() {
+    current = 0; score = 0; answered = false;
+    document.getElementById('quiz-panel').style.display = 'block';
+    document.getElementById('quiz-result').style.display = 'none';
+    renderQ();
+  }
+
+  function renderQ() {
+    answered = false;
+    const q = questions[current];
+    document.getElementById('qnum').textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
+    document.getElementById('qlive').textContent = 'Score: ' + score;
+    document.getElementById('qprogress').style.width = ((current / questions.length) * 100) + '%';
+    document.getElementById('qtext').textContent = q.q;
+    document.getElementById('qfeedback').textContent = '';
+    document.getElementById('qfeedback').className = 'quiz-feedback';
+    document.getElementById('qnext').style.display = 'none';
+    const opts = document.getElementById('qopts');
+    opts.innerHTML = '';
+    q.opts.forEach(function(opt, i) {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span> ' + opt;
+      btn.onclick = function() { choose(i, btn); };
+      opts.appendChild(btn);
+    });
+  }
+
+  function choose(idx, btn) {
+    if (answered) return;
+    answered = true;
+    const q = questions[current];
+    const allBtns = document.querySelectorAll('.quiz-opt');
+    allBtns.forEach(function(b) { b.disabled = true; });
+    const fb = document.getElementById('qfeedback');
+    if (idx === q.ans) {
+      btn.classList.add('correct');
+      score++;
+      fb.textContent = '✓ Correct! ' + q.exp;
+      fb.className = 'quiz-feedback ok';
+    } else {
+      btn.classList.add('wrong');
+      allBtns[q.ans].classList.add('reveal');
+      fb.textContent = '✗ Not quite. ' + q.exp;
+      fb.className = 'quiz-feedback err';
+    }
+    document.getElementById('qlive').textContent = 'Score: ' + score;
+    document.getElementById('qnext').style.display = 'inline-block';
+    document.getElementById('qnext').textContent = current < questions.length - 1 ? 'Next →' : 'See results →';
+  }
+
+  function nextQ() {
+    current++;
+    if (current >= questions.length) { showResult(); return; }
+    renderQ();
+  }
+
+  function showResult() {
+    document.getElementById('quiz-panel').style.display = 'none';
+    const res = document.getElementById('quiz-result');
+    res.style.display = 'block';
+    document.getElementById('qprogress').style.width = '100%';
+    document.getElementById('res-score').textContent = score;
+    document.getElementById('res-score').style.color = score >= 8 ? '#3DDC84' : score >= 5 ? '#FFA657' : '#FF7B72';
+    setTimeout(function() {
+      document.getElementById('res-bar').style.width = ((score / questions.length) * 100) + '%';
+    }, 100);
+    const msgs = [
+      "Keep practicing — review the modules and give it another try!",
+      "Good effort! A few more revisions and you'll nail it.",
+      "Solid work! You've got a strong grasp of R graphics.",
+      "Excellent! You clearly know your R graphics inside out. 🎉"
+    ];
+    const tier = score <= 3 ? 0 : score <= 5 ? 1 : score <= 8 ? 2 : 3;
+    document.getElementById('res-msg').textContent = msgs[tier];
+  }
+
+  startQuiz();
+</script>
+</body>
+</html>
