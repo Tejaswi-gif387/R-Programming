@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Organization</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            line-height: 1.7;
+        }
+        header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 24px 40px;
+        }
+        header h1 { font-size: 1.8em; }
+        header p { color: #aab; margin-top: 4px; }
+        nav {
+            background: #34495e;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 10px 40px;
+        }
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        nav a:hover, nav a.active { background: #2980b9; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px 60px; }
+        .unit {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+        .unit-header {
+            background: #2980b9;
+            color: #fff;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .unit-header:hover { background: #2471a3; }
+        .unit-header h2 { font-size: 1.1em; }
+        .unit-header .periods { font-size: 0.85em; opacity: 0.85; }
+        .unit-body { padding: 20px 24px; display: none; }
+        .unit-body.open { display: block; }
+        .topic {
+            margin-bottom: 18px;
+            border-left: 3px solid #2980b9;
+            padding-left: 14px;
+        }
+        .topic h3 {
+            color: #2c3e50;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+        .topic p { font-size: 0.93em; color: #555; }
+
+        /* Quiz */
+        #quiz-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 28px 24px;
+            margin-bottom: 28px;
+        }
+        #quiz-section h2 {
+            color: #2c3e50;
+            margin-bottom: 18px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 8px;
+        }
+        .question { margin-bottom: 22px; }
+        .question p { font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
+        .options label {
+            display: block;
+            background: #f0f4f8;
+            border: 1px solid #dde;
+            border-radius: 5px;
+            padding: 8px 14px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .options label:hover { background: #dce8f5; }
+        .options input { margin-right: 8px; }
+        .options label.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+        .options label.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+        #submit-quiz {
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 11px 32px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #submit-quiz:hover { background: #2471a3; }
+        #quiz-result {
+            margin-top: 16px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Computer Organization</h1>
+    <p>Mrs. D. Tejaswi &nbsp;|&nbsp; ANITS, Visakhapatnam</p>
+</header>
+
+<nav>
+    <a href="#unit1" class="active">Unit I</a>
+    <a href="#unit2">Unit II</a>
+    <a href="#unit3">Unit III</a>
+    <a href="#unit4">Unit IV</a>
+    <a href="#unit5">Unit V</a>
+    <a href="#quiz-section">Quiz</a>
+</nav>
+
+<div class="container">
+    <a href="index.html" class="back-link">← Back to Home</a>
+
+    <!-- UNIT I -->
+    <div class="unit" id="unit1">
+        <div class="unit-header" onclick="toggleUnit(this)">
+            <h2>Unit I — Register Transfer and Microoperations</h2>
+            <span class="periods">10 Periods ▾</span>
+        </div>
+        <div class="unit-body open">
+            <div class="topic">
+                <h3>Register Transfer Language (RTL)</h3>
+                <p>RTL is a symbolic notation used to describe the micro-operations performed on the data stored in registers. It uses symbols like R1 ← R2 to denote that the content of R2 is transferred to R1. It forms the basis for designing and understanding digital systems at the register level.</p>
+            </div>
+            <div class="topic">
+                <h3>Register Transfer</h3>
+                <p>Register transfer involves moving binary data from one register to another. It is controlled by clock pulses and conditional signals. Example: If (P=1) then R2 ← R1 means transfer occurs only when control signal P is active.</p>
+            </div>
+            <div class="topic">
+                <h3>Bus and Memory Transfers</h3>
+                <p>A bus is a shared communication path that connects multiple registers. Using multiplexers, a common bus can be shared by all registers. Memory transfers use the MAR (Memory Address Register) and MBR (Memory Buffer Register) to read/write data: MBR ← M[MAR] for a read operation.</p>
+            </div>
+            <div class="topic">
+                <h3>Arithmetic Microoperations</h3>
+                <p>These include addition, subtraction, increment, decrement, and complement operations on binary data stored in registers. Example: R3 ← R1 + R2 (addition), R2 ← R2 + 1 (increment). These are performed by the ALU.</p>
+            </div>
+            <div class="topic">
+                <h3>Logic Microoperations</h3>
+                <p>Bitwise logical operations — AND, OR, XOR, NOT — applied to register contents. They are used for masking, setting, clearing, or inverting specific bits. Example: R1 ← R1 AND R2 clears bits in R1 where R2 has 0s.</p>
+            </div>
+            <div class="topic">
+                <h3>Shift Microoperations</h3>
+                <p>Shift operations move bits left or right within a register. Types: Logical shift (fills with 0), Arithmetic shift (preserves sign bit), Circular/Rotate shift (bits wrap around). Used in multiplication, division, and serial data transfer.</p>
+            </div>
+            <div class="topic">
+                <h3>Arithmetic Logic Shift Unit (ALSU)</h3>
+                <p>The ALSU is a combined hardware unit that performs all arithmetic, logic, and shift microoperations. It is controlled by selection lines that determine which operation to execute. The output is then stored back into a register.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNIT II -->
+    <div class="unit" id="unit2">
+        <div class="unit-header" onclick="toggleUnit(this)">
+            <h2>Unit II — Basic Computer Organization & Microprogrammed Control</h2>
+            <span class="periods">12 Periods ▾</span>
+        </div>
+        <div class="unit-body">
+            <div class="topic">
+                <h3>Instruction Codes</h3>
+                <p>An instruction code is a binary code that directs the computer to perform a specific operation. It consists of an operation code (opcode) specifying the operation and an address field specifying the operand location. The opcode determines what action the CPU performs.</p>
+            </div>
+            <div class="topic">
+                <h3>Computer Registers</h3>
+                <p>Key registers include: PC (Program Counter) — holds the address of the next instruction; AC (Accumulator) — stores intermediate results; IR (Instruction Register) — holds the current instruction; MAR — memory address register; MBR/MDR — memory data register; SP — stack pointer.</p>
+            </div>
+            <div class="topic">
+                <h3>Computer Instructions</h3>
+                <p>Instructions are classified as memory-reference (operand in memory), register-reference (operate on AC without memory), and I/O instructions (for input/output). Each has a distinct format defined by the opcode bits and mode bit (direct/indirect addressing).</p>
+            </div>
+            <div class="topic">
+                <h3>Hardwired Control Unit</h3>
+                <p>In a hardwired control unit, the control signals are generated by logic circuits (flip-flops, gates, decoders). It is fast but inflexible — changing the instruction set requires redesigning the hardware. Suitable for RISC processors where simplicity is preferred.</p>
+            </div>
+            <div class="topic">
+                <h3>Instruction Cycle</h3>
+                <p>The instruction cycle consists of: Fetch (get instruction from memory using PC), Decode (interpret the opcode), Execute (perform the operation). Some instructions also have an indirect cycle (for indirect addressing) and an interrupt cycle.</p>
+            </div>
+            <div class="topic">
+                <h3>Memory Reference Instructions</h3>
+                <p>These instructions use memory as the source or destination of data. Examples include AND (AC ← AC AND M[EA]), ADD (AC ← AC + M[EA]), LDA (load AC from memory), STA (store AC to memory), BUN (branch unconditionally), and BSA (branch and save return address).</p>
+            </div>
+            <div class="topic">
+                <h3>Control Memory</h3>
+                <p>In microprogrammed control, control signals are stored as microinstructions in a special memory called Control Memory (CM) or Control Store. Each microinstruction contains bits that directly activate the control lines of the datapath.</p>
+            </div>
+            <div class="topic">
+                <h3>Address Sequencing</h3>
+                <p>The Control Address Register (CAR) holds the address of the next microinstruction. Address sequencing methods include: incrementing CAR, unconditional branch, conditional branch, and mapping from instruction opcode to microprogram address using a mapping ROM.</p>
+            </div>
+            <div class="topic">
+                <h3>Microinstruction Formats</h3>
+                <p>Microinstructions can be horizontal (wide word, many control bits, high parallelism), vertical (narrow word, encoded fields, less parallelism), or diagonal (a compromise). Each format trades hardware cost against flexibility and execution speed.</p>
+            </div>
+            <div class="topic">
+                <h3>Microprogram Example & Design of Control Unit</h3>
+                <p>A microprogram is a sequence of microinstructions that implements a machine instruction. The control unit is designed by writing microprograms for each instruction and storing them in control memory. The fetch cycle is a common microprogram shared by all instructions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNIT III -->
+    <div class="unit" id="unit3">
+        <div class="unit-header" onclick="toggleUnit(this)">
+            <h2>Unit III — CPU Organization</h2>
+            <span class="periods">10 Periods ▾</span>
+        </div>
+        <div class="unit-body">
+            <div class="topic">
+                <h3>General Register Organization</h3>
+                <p>Instead of a single accumulator, a general register organization uses a set of CPU registers (R0–Rn) connected via an internal bus to an ALU. A multiplexer selects the source registers (A and B) for the ALU, and a decoder selects the destination register for storing the result. This improves speed and flexibility.</p>
+            </div>
+            <div class="topic">
+                <h3>Instruction Formats</h3>
+                <p>Instruction formats define how bits are divided among opcode, address fields, and mode. Common formats: Three-address (opcode, dest, src1, src2), Two-address, One-address (accumulator-based), Zero-address (stack-based, uses push/pop). Longer formats allow more flexibility but need wider instruction registers.</p>
+            </div>
+            <div class="topic">
+                <h3>Addressing Modes</h3>
+                <p>Addressing modes specify how to calculate the effective address (EA) of the operand. Types: Immediate (operand = constant), Direct (EA = address field), Indirect (EA = M[address]), Register, Register Indirect, Displacement/Indexed (EA = base + index), Relative (EA = PC + offset), Autoincrement/Autodecrement.</p>
+            </div>
+            <div class="topic">
+                <h3>Data Transfer and Manipulation</h3>
+                <p>Data transfer instructions move data between registers and memory (MOV, LOAD, STORE, PUSH, POP). Data manipulation instructions perform arithmetic (ADD, SUB, MUL, DIV), logical (AND, OR, NOT, XOR), and shift operations on data.</p>
+            </div>
+            <div class="topic">
+                <h3>Program Control</h3>
+                <p>Program control instructions alter the sequential flow: unconditional branch (JMP), conditional branch (BEQ, BNE, BGT), subroutine call (CALL/JSR) and return (RET), software interrupt (INT), and return from interrupt (IRET). These enable loops, decisions, and function calls.</p>
+            </div>
+            <div class="topic">
+                <h3>Stack Organization</h3>
+                <p>A stack is a LIFO (Last In First Out) data structure. A hardware stack is a set of memory locations with a Stack Pointer (SP). PUSH decrements SP and stores data; POP reads data and increments SP. Stacks are used for subroutine return addresses, expression evaluation, and parameter passing.</p>
+            </div>
+            <div class="topic">
+                <h3>RISC vs CISC Architectures</h3>
+                <p>RISC (Reduced Instruction Set Computer): few, simple instructions, fixed-length encoding, load/store architecture, hardwired control, many registers — e.g., MIPS, ARM. CISC (Complex Instruction Set Computer): many complex instructions, variable-length encoding, memory-to-memory operations, microprogrammed control — e.g., x86. RISC favors pipelining; CISC reduces instruction count per program.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNIT IV -->
+    <div class="unit" id="unit4">
+        <div class="unit-header" onclick="toggleUnit(this)">
+            <h2>Unit IV — Memory Organization</h2>
+            <span class="periods">09 Periods ▾</span>
+        </div>
+        <div class="unit-body">
+            <div class="topic">
+                <h3>Memory Hierarchy</h3>
+                <p>Memory is organized in a hierarchy based on speed and cost: Registers → Cache → Main Memory (RAM) → Secondary Storage (HDD/SSD) → Tertiary (optical/tape). Faster memory is smaller and more expensive; slower memory is larger and cheaper. The hierarchy exploits locality of reference for performance.</p>
+            </div>
+            <div class="topic">
+                <h3>Main Memory</h3>
+                <p>Main memory (RAM) is directly accessible by the CPU. It is organized as an array of storage cells, each holding one bit, grouped into bytes or words. Types: SRAM (fast, used in cache), DRAM (slower, denser, used in main memory). Memory chips are connected via address, data, and control buses.</p>
+            </div>
+            <div class="topic">
+                <h3>Auxiliary Memory</h3>
+                <p>Auxiliary (secondary) memory provides large, non-volatile storage. Includes hard disk drives (HDD), solid-state drives (SSD), magnetic tapes, and optical disks. Data is transferred to/from main memory as needed. Access is much slower than RAM but far cheaper per bit.</p>
+            </div>
+            <div class="topic">
+                <h3>Associative Memory (Content Addressable Memory)</h3>
+                <p>Associative memory is accessed by content rather than by address. A search key is compared simultaneously with all stored words, and matching entries are flagged. Used in TLBs (Translation Lookaside Buffers) and cache tag stores for fast lookups.</p>
+            </div>
+            <div class="topic">
+                <h3>Cache Memory</h3>
+                <p>Cache is a small, fast memory between CPU and main memory. It stores frequently accessed data (principle of locality). Mapping techniques: Direct mapping (each block maps to one cache line), Fully associative (any block in any line), Set-associative (compromise). Replacement policies: LRU, FIFO, Random. Write policies: Write-through, Write-back.</p>
+            </div>
+            <div class="topic">
+                <h3>Virtual Memory</h3>
+                <p>Virtual memory allows programs to use more memory than physically available by storing parts of a process on disk. The OS manages a page table to map virtual addresses to physical addresses. Page faults trigger loading of the required page from disk. Techniques: Paging, Segmentation, Segmentation with Paging.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNIT V -->
+    <div class="unit" id="unit5">
+        <div class="unit-header" onclick="toggleUnit(this)">
+            <h2>Unit V — Input-Output Organization</h2>
+            <span class="periods">09 Periods ▾</span>
+        </div>
+        <div class="unit-body">
+            <div class="topic">
+                <h3>Peripheral Devices</h3>
+                <p>Peripheral devices include input devices (keyboard, mouse, scanner), output devices (monitor, printer), and storage devices (disk drives). They communicate with the CPU via I/O interfaces that handle speed and format differences between the CPU and peripherals.</p>
+            </div>
+            <div class="topic">
+                <h3>Input-Output Interface</h3>
+                <p>An I/O interface (I/O controller) bridges the CPU and peripherals. It contains data registers, status registers, and control registers. The CPU communicates via I/O ports using addresses. Interfaces handle data buffering, format conversion, and timing differences.</p>
+            </div>
+            <div class="topic">
+                <h3>Asynchronous Data Transfer</h3>
+                <p>In asynchronous transfer, sender and receiver operate at different speeds and use handshaking signals to synchronize. Strobe method: sender asserts a strobe signal to indicate valid data. Handshaking: uses Request (RQ) and Acknowledge (ACK) signals for a two-way synchronization protocol.</p>
+            </div>
+            <div class="topic">
+                <h3>Modes of Transfer</h3>
+                <p>Three main I/O transfer modes: (1) Programmed I/O — CPU continuously polls the device status (busy-wait). (2) Interrupt-driven I/O — device interrupts CPU when ready, CPU handles ISR. (3) DMA — device transfers data directly to/from memory without CPU involvement, only notifying CPU when done.</p>
+            </div>
+            <div class="topic">
+                <h3>Priority Interrupt</h3>
+                <p>When multiple devices request interrupts simultaneously, a priority scheme determines which is serviced first. Methods: Daisy chaining (hardware priority — device closest to CPU gets highest priority), Parallel priority (each device has a separate interrupt line), Software polling (CPU checks each device in order).</p>
+            </div>
+            <div class="topic">
+                <h3>Direct Memory Access (DMA)</h3>
+                <p>DMA allows peripherals to transfer data directly to/from memory, bypassing the CPU. A DMA controller manages the transfer. CPU provides start address, block size, and direction, then releases the bus. DMA uses cycle stealing or burst mode. Ideal for bulk data transfers (disk, network) to free the CPU for computation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quiz-section">
+        <h2>Quiz — Computer Organization</h2>
+
+        <div class="question" id="q1">
+            <p>1. Which register holds the address of the next instruction to be executed?</p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="a"> A. Accumulator (AC)</label>
+                <label><input type="radio" name="q1" value="b"> B. Program Counter (PC)</label>
+                <label><input type="radio" name="q1" value="c"> C. Instruction Register (IR)</label>
+                <label><input type="radio" name="q1" value="d"> D. Memory Address Register (MAR)</label>
+            </div>
+        </div>
+
+        <div class="question" id="q2">
+            <p>2. In a hardwired control unit, control signals are generated by:</p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="a"> A. Microinstructions stored in ROM</label>
+                <label><input type="radio" name="q2" value="b"> B. Software routines</label>
+                <label><input type="radio" name="q2" value="c"> C. Logic gates and flip-flops</label>
+                <label><input type="radio" name="q2" value="d"> D. The operating system</label>
+            </div>
+        </div>
+
+        <div class="question" id="q3">
+            <p>3. Which addressing mode adds a constant offset to the Program Counter to find the effective address?</p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="a"> A. Indirect</label>
+                <label><input type="radio" name="q3" value="b"> B. Indexed</label>
+                <label><input type="radio" name="q3" value="c"> C. Relative</label>
+                <label><input type="radio" name="q3" value="d"> D. Immediate</label>
+            </div>
+        </div>
+
+        <div class="question" id="q4">
+            <p>4. Cache memory mapping where each main memory block maps to exactly one cache line is called:</p>
+            <div class="options">
+                <label><input type="radio" name="q4" value="a"> A. Fully Associative Mapping</label>
+                <label><input type="radio" name="q4" value="b"> B. Set-Associative Mapping</label>
+                <label><input type="radio" name="q4" value="c"> C. Direct Mapping</label>
+                <label><input type="radio" name="q4" value="d"> D. Random Mapping</label>
+            </div>
+        </div>
+
+        <div class="question" id="q5">
+            <p>5. DMA (Direct Memory Access) is primarily used to:</p>
+            <div class="options">
+                <label><input type="radio" name="q5" value="a"> A. Speed up CPU arithmetic operations</label>
+                <label><input type="radio" name="q5" value="b"> B. Transfer data between I/O devices and memory without CPU involvement</label>
+                <label><input type="radio" name="q5" value="c"> C. Increase the size of cache memory</label>
+                <label><input type="radio" name="q5" value="d"> D. Execute microinstructions faster</label>
+            </div>
+        </div>
+
+        <div class="question" id="q6">
+            <p>6. Which of the following is a characteristic of RISC architecture?</p>
+            <div class="options">
+                <label><input type="radio" name="q6" value="a"> A. Variable-length instruction encoding</label>
+                <label><input type="radio" name="q6" value="b"> B. Microprogrammed control unit</label>
+                <label><input type="radio" name="q6" value="c"> C. Large number of complex instructions</label>
+                <label><input type="radio" name="q6" value="d"> D. Fixed-length instructions and load/store architecture</label>
+            </div>
+        </div>
+
+        <div class="question" id="q7">
+            <p>7. Associative memory (Content Addressable Memory) is accessed by:</p>
+            <div class="options">
+                <label><input type="radio" name="q7" value="a"> A. Physical address</label>
+                <label><input type="radio" name="q7" value="b"> B. Virtual address</label>
+                <label><input type="radio" name="q7" value="c"> C. Content (data value)</label>
+                <label><input type="radio" name="q7" value="d"> D. Segment number</label>
+            </div>
+        </div>
+
+        <div class="question" id="q8">
+            <p>8. In interrupt-driven I/O, the CPU is interrupted by a device when:</p>
+            <div class="options">
+                <label><input type="radio" name="q8" value="a"> A. The CPU requests data</label>
+                <label><input type="radio" name="q8" value="b"> B. The device is ready to transfer data</label>
+                <label><input type="radio" name="q8" value="c"> C. A page fault occurs</label>
+                <label><input type="radio" name="q8" value="d"> D. The cache is full</label>
+            </div>
+        </div>
+
+        <div class="question" id="q9">
+            <p>9. The shift microoperation that preserves the sign bit is called:</p>
+            <div class="options">
+                <label><input type="radio" name="q9" value="a"> A. Logical shift</label>
+                <label><input type="radio" name="q9" value="b"> B. Circular shift</label>
+                <label><input type="radio" name="q9" value="c"> C. Arithmetic shift</label>
+                <label><input type="radio" name="q9" value="d"> D. Rotate shift</label>
+            </div>
+        </div>
+
+        <div class="question" id="q10">
+            <p>10. Virtual memory enables programs to use more memory than physically available by:</p>
+            <div class="options">
+                <label><input type="radio" name="q10" value="a"> A. Compressing data in RAM</label>
+                <label><input type="radio" name="q10" value="b"> B. Storing parts of a process on disk and loading on demand</label>
+                <label><input type="radio" name="q10" value="c"> C. Using multiple CPUs simultaneously</label>
+                <label><input type="radio" name="q10" value="d"> D. Increasing cache size dynamically</label>
+            </div>
+        </div>
+
+        <button id="submit-quiz" onclick="submitQuiz()">Submit Quiz</button>
+        <div id="quiz-result"></div>
+    </div>
+
+</div>
+
+<script>
+    const answers = { q1:'b', q2:'c', q3:'c', q4:'c', q5:'b', q6:'d', q7:'c', q8:'b', q9:'c', q10:'b' };
+
+    function toggleUnit(header) {
+        const body = header.nextElementSibling;
+        body.classList.toggle('open');
+        const span = header.querySelector('.periods');
+        span.textContent = span.textContent.includes('▾')
+            ? span.textContent.replace('▾','▸')
+            : span.textContent.replace('▸','▾');
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        Object.keys(answers).forEach(q => {
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            const labels = document.querySelectorAll(`#${q} .options label`);
+            labels.forEach(label => {
+                const val = label.querySelector('input').value;
+                if (val === answers[q]) label.classList.add('correct');
+            });
+            if (selected) {
+                if (selected.value === answers[q]) {
+                    score++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                }
+            }
+        });
+        const result = document.getElementById('quiz-result');
+        result.textContent = `You scored ${score} / 10 — ${score >= 8 ? '🎉 Excellent!' : score >= 5 ? '👍 Good effort!' : '📚 Keep studying!'}`;
+        document.getElementById('submit-quiz').disabled = true;
+    }
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('nav a').forEach(a => {
+        a.addEventListener('click', e => {
+            document.querySelectorAll('nav a').forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
